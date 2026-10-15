@@ -1,0 +1,546 @@
+```html
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Gold Scalper Dashboard - XAUUSD M5-M15</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#0f1115',
+                        cardbg: '#1a1d23',
+                        cardborder: '#2a2f38',
+                        brandgreen: '#00ff88',
+                        brandred: '#ff4757',
+                        brandblue: '#00d2ff',
+                        brandyellow: '#ffd32a'
+                    },
+                    fontFamily: {
+                        mono: ['Courier New', 'Courier', 'monospace'],
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        /* Blinking & Glow Animations */
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.25; }
+        }
+        .animate-blink {
+            animation: blink 0.8s infinite;
+        }
+        .glow-green {
+            box-shadow: 0 0 25px rgba(0, 255, 136, 0.4);
+        }
+        .glow-red {
+            box-shadow: 0 0 25px rgba(255, 71, 87, 0.4);
+        }
+        .glow-yellow {
+            box-shadow: 0 0 20px rgba(255, 211, 42, 0.35);
+        }
+        .pulse-glow {
+            animation: pulseGlow 2s infinite ease-in-out;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.008); }
+        }
+        /* Custom scrollbar for dark layout */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f1115;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2a2f38;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-darkbg text-gray-100 font-sans min-h-screen p-3 sm:p-5 md:p-7">
+
+    <div class="max-w-7xl mx-auto space-y-6">
+
+        <!-- HEADER & REAL-TIME TIMESTAMP -->
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center bg-cardbg border border-cardborder p-4 sm:p-5 rounded-2xl shadow-xl gap-4">
+            <div>
+                <div class="flex items-center gap-2.5">
+                    <span class="relative flex h-3 w-3">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brandgreen opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-brandgreen"></span>
+                    </span>
+                    <h1 class="text-xl sm:text-2xl font-bold tracking-wider text-white">
+                        VANTAGE DEMO TRADER 
+                        <span class="text-brandgreen text-xs sm:text-sm px-2.5 py-0.5 bg-green-950/70 border border-brandgreen/40 rounded-md font-mono">XAUUSD M5-M15</span>
+                    </h1>
+                </div>
+                <p class="text-xs text-gray-400 mt-1">
+                    Professional Gold Scalper Dashboard • Server Time: 
+                    <span id="server-time" class="font-mono text-brandblue font-semibold">--:--:-- UTC+3</span>
+                </p>
+            </div>
+            
+            <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end border-t md:border-t-0 border-cardborder pt-3 md:pt-0">
+                <div class="text-left md:text-right">
+                    <div class="text-[10px] uppercase tracking-wider text-gray-400">LAST SYNCED</div>
+                    <div id="last-sync-time" class="text-xs font-mono text-gray-200 font-semibold">Just now</div>
+                </div>
+                <button onclick="syncNow(event)" class="bg-brandgreen/20 hover:bg-brandgreen/30 text-brandgreen border border-brandgreen/40 px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-200 flex items-center gap-2 active:scale-95 shadow-md">
+                    <svg class="w-4 h-4 animate-spin-hover" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    SYNC TO VANTAGE
+                </button>
+            </div>
+        </header>
+
+        <!-- VANTAGE SYNC HERO INPUT & STATUS BANNER -->
+        <section class="bg-cardbg border-2 border-brandgreen/50 p-4 sm:p-6 rounded-2xl shadow-2xl pulse-glow space-y-4">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+                <div>
+                    <label for="current-price-input" class="block text-xs uppercase tracking-widest text-brandgreen font-extrabold mb-1.5">
+                        VANTAGE PRICE NOW (HERO ELEMENT - EDITABLE)
+                    </label>
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl sm:text-3xl font-mono font-bold text-gray-400">$</span>
+                        <input type="number" step="0.01" id="current-price-input" value="4143.40" 
+                            oninput="onPriceChange(this.value)"
+                            class="bg-darkbg border-2 border-brandgreen text-white font-mono text-3xl sm:text-4xl font-extrabold px-4 py-2 rounded-xl w-48 sm:w-64 focus:outline-none focus:ring-4 focus:ring-brandgreen/30 glow-green transition-all">
+                    </div>
+                </div>
+
+                <!-- Quick Adjust Buttons -->
+                <div class="w-full lg:w-auto">
+                    <div class="text-xs text-gray-400 mb-1.5 font-medium">Quick Price Adjustment:</div>
+                    <div class="flex flex-wrap gap-1.5 sm:gap-2">
+                        <button onclick="adjustPrice(-10)" class="bg-red-950/70 hover:bg-red-900 border border-red-500/40 text-red-400 px-3 py-1.5 rounded-lg font-mono text-xs font-bold transition active:scale-95">-10$</button>
+                        <button onclick="adjustPrice(-5)" class="bg-red-950/70 hover:bg-red-900 border border-red-500/40 text-red-400 px-3 py-1.5 rounded-lg font-mono text-xs font-bold transition active:scale-95">-5$</button>
+                        <button onclick="adjustPrice(-1)" class="bg-red-950/70 hover:bg-red-900 border border-red-500/40 text-red-400 px-3 py-1.5 rounded-lg font-mono text-xs font-bold transition active:scale-95">-1$</button>
+                        <button onclick="adjustPrice(1)" class="bg-green-950/70 hover:bg-green-900 border border-green-500/40 text-brandgreen px-3 py-1.5 rounded-lg font-mono text-xs font-bold transition active:scale-95">+1$</button>
+                        <button onclick="adjustPrice(5)" class="bg-green-950/70 hover:bg-green-900 border border-green-500/40 text-brandgreen px-3 py-1.5 rounded-lg font-mono text-xs font-bold transition active:scale-95">+5$</button>
+                        <button onclick="adjustPrice(10)" class="bg-green-950/70 hover:bg-green-900 border border-green-500/40 text-brandgreen px-3 py-1.5 rounded-lg font-mono text-xs font-bold transition active:scale-95">+10$</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BLINKING BANNER (Interactive Multi-States) -->
+            <div id="status-banner" class="p-4 sm:p-5 rounded-xl text-center font-bold text-sm sm:text-base md:text-lg transition-all duration-300 bg-gray-800 text-gray-300 border border-gray-700 shadow-inner">
+                <span id="banner-text">WAITING FOR FILL - Gap +8.40$</span>
+            </div>
+
+            <!-- TEST BUTTONS & INSTRUCTIONS -->
+            <div class="flex flex-col sm:flex-row justify-between items-center pt-2 gap-3 text-xs">
+                <div class="flex gap-2 w-full sm:w-auto">
+                    <button onclick="triggerReadyBuy()" class="flex-1 sm:flex-none bg-brandgreen text-darkbg font-extrabold px-3.5 py-2 rounded-xl hover:bg-emerald-400 transition shadow-lg active:scale-95">
+                        🔥 TEST BLINK BUY (4135)
+                    </button>
+                    <button onclick="triggerReadySell()" class="flex-1 sm:flex-none bg-brandred text-white font-extrabold px-3.5 py-2 rounded-xl hover:bg-red-600 transition shadow-lg active:scale-95">
+                        🔴 TEST BLINK SELL (4161)
+                    </button>
+                </div>
+                <div class="text-gray-400 italic text-center sm:text-right">
+                    💡 Auto-sync prompt: <span class="text-brandgreen font-mono font-bold">"Vantage 4143.40"</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ACCOUNT OVERVIEW & PENDING ORDER TRACKER -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <!-- ACCOUNT OVERVIEW (1 Col) -->
+            <div class="bg-cardbg border border-cardborder p-5 rounded-2xl shadow-xl space-y-4">
+                <h2 class="text-xs uppercase tracking-widest text-gray-400 font-bold border-b border-cardborder pb-2.5 flex justify-between items-center">
+                    <span>Account Overview</span>
+                    <span class="text-[10px] bg-brandblue/20 text-brandblue px-2 py-0.5 rounded font-mono">DEMO</span>
+                </h2>
+                
+                <div class="space-y-3">
+                    <div>
+                        <label for="account-equity" class="text-xs text-gray-400 block mb-1">Equity ($) - Editable</label>
+                        <input type="number" step="0.01" id="account-equity" value="6951.06" oninput="updateAccountCalculations()" 
+                            class="bg-darkbg border border-cardborder text-white font-mono text-lg font-bold w-full px-3.5 py-2 rounded-xl focus:outline-none focus:border-brandgreen transition">
+                    </div>
+                    <div class="flex justify-between items-center bg-darkbg/60 p-3 rounded-xl border border-cardborder">
+                        <span class="text-xs text-gray-400">Balance:</span>
+                        <span id="account-balance" class="font-mono font-bold text-white text-sm">$6,951.06</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-darkbg/60 p-3 rounded-xl border border-cardborder">
+                        <span class="text-xs text-gray-400">Free Margin:</span>
+                        <span id="free-margin" class="font-mono font-bold text-brandgreen text-sm">$6,951.06</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-darkbg/60 p-3 rounded-xl border border-cardborder">
+                        <span class="text-xs text-gray-400">Floating PnL:</span>
+                        <span id="floating-pnl" class="font-mono font-bold text-brandgreen text-sm">+$0.00</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-darkbg/60 p-3 rounded-xl border border-cardborder">
+                        <span class="text-xs text-gray-400">Margin Used:</span>
+                        <span id="margin-used" class="font-mono font-bold text-gray-300 text-sm">$0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PENDING ORDER TRACKER (2 Cols) -->
+            <div class="lg:col-span-2 bg-cardbg border border-cardborder p-5 rounded-2xl shadow-xl space-y-4">
+                <div class="flex justify-between items-center border-b border-cardborder pb-2.5">
+                    <h2 class="text-xs uppercase tracking-widest text-gray-400 font-bold">Pending Order Tracker (#88291)</h2>
+                    <span class="text-xs bg-brandblue/20 text-brandblue border border-brandblue/30 px-2.5 py-0.5 rounded-md font-mono font-semibold">M5 Timeframe</span>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+                    <div class="bg-darkbg/70 p-3.5 rounded-xl border border-cardborder">
+                        <div class="text-[10px] text-gray-400 uppercase tracking-wider">Symbol</div>
+                        <div class="text-base sm:text-lg font-mono font-extrabold text-white mt-1">XAUUSD</div>
+                    </div>
+                    <div class="bg-darkbg/70 p-3.5 rounded-xl border border-cardborder">
+                        <div class="text-[10px] text-gray-400 uppercase tracking-wider">Order & Entry</div>
+                        <div class="mt-1 flex items-center gap-1.5">
+                            <span class="text-xs text-brandgreen font-bold">LIMIT BUY</span>
+                            <input type="number" step="0.01" id="order-entry" value="4135.00" oninput="calculateMetrics()" 
+                                class="bg-darkbg border border-cardborder text-white font-mono text-xs font-bold w-20 px-1.5 py-0.5 rounded focus:outline-none focus:border-brandgreen">
+                        </div>
+                    </div>
+                    <div class="bg-darkbg/70 p-3.5 rounded-xl border border-cardborder">
+                        <div class="text-[10px] text-gray-400 uppercase tracking-wider">Current Price</div>
+                        <div id="tracker-current-price" class="text-base sm:text-lg font-mono font-extrabold text-brandgreen mt-1">4143.40</div>
+                    </div>
+                    <div class="bg-darkbg/70 p-3.5 rounded-xl border border-cardborder">
+                        <div class="text-[10px] text-gray-400 uppercase tracking-wider">Gap (Current - Entry)</div>
+                        <div id="tracker-gap" class="text-base sm:text-lg font-mono font-extrabold text-brandblue mt-1">+8.40$</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5 pt-1">
+                    <div class="bg-darkbg/40 p-2.5 rounded-xl border border-cardborder text-center">
+                        <div class="text-[10px] text-gray-400">SL</div>
+                        <div class="font-mono font-bold text-brandred text-sm">4128.00</div>
+                    </div>
+                    <div class="bg-darkbg/40 p-2.5 rounded-xl border border-cardborder text-center">
+                        <div class="text-[10px] text-gray-400">TP</div>
+                        <div class="font-mono font-bold text-brandgreen text-sm">4150.00</div>
+                    </div>
+                    <div class="bg-darkbg/40 p-2.5 rounded-xl border border-cardborder text-center">
+                        <div class="text-[10px] text-gray-400">Lot Size</div>
+                        <div class="font-mono font-bold text-white text-sm">0.10</div>
+                    </div>
+                    <div class="bg-darkbg/40 p-2.5 rounded-xl border border-cardborder text-center">
+                        <div class="text-[10px] text-gray-400">RR Ratio</div>
+                        <div class="font-mono font-bold text-brandblue text-sm">2.14</div>
+                    </div>
+                    <div class="bg-darkbg/40 p-2.5 rounded-xl border border-cardborder text-center">
+                        <div class="text-[10px] text-gray-400">Risk ($)</div>
+                        <div class="font-mono font-bold text-brandred text-sm">$70 (1%)</div>
+                    </div>
+                    <div class="bg-darkbg/40 p-2.5 rounded-xl border border-cardborder text-center">
+                        <div class="text-[10px] text-gray-400">Order ID</div>
+                        <div class="font-mono font-bold text-gray-300 text-sm">#88291</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHART LEVELS & POSITION SIZING CALCULATOR -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            <!-- CHART LEVELS & MARKET STRUCTURE -->
+            <div class="bg-cardbg border border-cardborder p-5 rounded-2xl shadow-xl space-y-4">
+                <h2 class="text-xs uppercase tracking-widest text-gray-400 font-bold border-b border-cardborder pb-2.5">
+                    Chart Levels & Structure (M5-M15)
+                </h2>
+                
+                <div class="space-y-2.5">
+                    <div id="buy-zone-level" class="flex justify-between items-center bg-darkbg/60 p-3 rounded-xl border border-cardborder transition-all">
+                        <span class="text-xs text-gray-400 font-medium">BUY ZONE</span>
+                        <span class="font-mono font-bold text-brandgreen text-sm">4114.00 - 4120.00</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-darkbg/60 p-3 rounded-xl border border-cardborder">
+                        <span class="text-xs text-gray-400 font-medium">Moving Average (MA)</span>
+                        <span class="font-mono font-bold text-brandblue text-sm">4142.59</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-darkbg/60 p-3 rounded-xl border border-cardborder">
+                        <span class="text-xs text-gray-400 font-medium">Today's High (06:00 UTC+3 Peak)</span>
+                        <span class="font-mono font-bold text-brandred text-sm">4161.73</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div class="bg-darkbg/60 p-3 rounded-xl border border-cardborder text-center">
+                            <div class="text-[10px] text-gray-400">Support</div>
+                            <div class="font-mono font-bold text-white text-sm mt-0.5">4105.00</div>
+                        </div>
+                        <div class="bg-darkbg/60 p-3 rounded-xl border border-cardborder text-center">
+                            <div class="text-[10px] text-gray-400">Resistance</div>
+                            <div class="font-mono font-bold text-white text-sm mt-0.5">4161.00</div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center text-xs text-gray-400 pt-1">
+                        <span>Spread: <strong class="text-white font-mono">0.28</strong></span>
+                        <span>Server Clock: <strong id="server-time-details" class="text-brandblue font-mono">11:23 AM VANTAGE REAL</strong></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- POSITION SIZING CALCULATOR -->
+            <div class="bg-cardbg border border-cardborder p-5 rounded-2xl shadow-xl space-y-4">
+                <h2 class="text-xs uppercase tracking-widest text-gray-400 font-bold border-b border-cardborder pb-2.5">
+                    Position Sizing Calculator
+                </h2>
+                
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-xs text-gray-400 mb-1">
+                            <span>Account Balance ($)</span>
+                            <span id="calc-bal-display" class="font-mono text-white font-semibold">$6,951.06</span>
+                        </div>
+                        <input type="number" id="calc-balance" value="6951.06" oninput="calculatePositionSize()" 
+                            class="bg-darkbg border border-cardborder text-white font-mono text-sm font-bold w-full px-3.5 py-2 rounded-xl focus:outline-none focus:border-brandgreen">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-xs text-gray-400 mb-1.5">
+                            <span>Risk Percentage (%)</span>
+                            <span id="risk-pct-display" class="font-mono text-brandgreen font-bold">1.0%</span>
+                        </div>
+                        <input type="range" id="risk-slider" min="0.5" max="2.0" step="0.1" value="1.0" oninput="calculatePositionSize()"
+                            class="w-full accent-brandgreen cursor-pointer h-2 bg-darkbg rounded-lg appearance-none">
+                        <div class="flex justify-between text-[10px] text-gray-500 mt-1 font-mono">
+                            <span>0.5% (Conservative)</span>
+                            <span>1.0% (Standard)</span>
+                            <span>2.0% (Aggressive)</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-darkbg/70 p-3.5 rounded-xl border border-cardborder grid grid-cols-3 gap-2 text-center">
+                        <div>
+                            <div class="text-[10px] text-gray-400">SL Distance</div>
+                            <div class="font-mono font-bold text-white text-sm mt-0.5">$7.00</div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] text-gray-400">Rec. Lot Size</div>
+                            <div id="calc-lot-result" class="font-mono font-bold text-brandgreen text-sm mt-0.5">0.10</div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] text-gray-400">Safe Lot Range</div>
+                            <div class="font-mono font-bold text-brandblue text-sm mt-0.5">0.08 - 0.10</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ALERTS SCHEDULE -->
+        <section class="bg-cardbg border border-cardborder p-5 rounded-2xl shadow-xl space-y-4">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-cardborder pb-2.5 gap-2">
+                <div>
+                    <h2 class="text-xs uppercase tracking-widest text-gray-400 font-bold">Alerts Schedule & Market Sessions</h2>
+                    <p class="text-[11px] text-gray-400 font-mono mt-0.5">
+                        WEEKDAYS ONLY: FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR (Market Closed Weekend)
+                    </p>
+                </div>
+                <div class="bg-darkbg px-3.5 py-1.5 rounded-xl border border-cardborder text-xs">
+                    Next Alert Countdown: <span id="next-countdown" class="font-mono text-brandyellow font-bold">--:--:--</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-darkbg/50 p-4 rounded-xl border border-cardborder space-y-1.5">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-brandblue font-semibold">09:00 UTC+8 (Asia)</span>
+                        <span class="text-[10px] bg-brandblue/20 text-brandblue px-2 py-0.5 rounded font-bold">Completed</span>
+                    </div>
+                    <div class="font-bold text-white text-sm">Morning Bias</div>
+                    <p class="text-xs text-gray-400">Asia to London direction setup & initial liquidity mapping.</p>
+                </div>
+
+                <div class="bg-darkbg/50 p-4 rounded-xl border border-brandgreen/50 bg-green-950/20 space-y-1.5">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-brandgreen font-bold">15:00 UTC+8 (London)</span>
+                        <span class="text-[10px] bg-brandgreen text-darkbg px-2 py-0.5 rounded font-extrabold">NEXT ACTIVE</span>
+                    </div>
+                    <div class="font-bold text-white text-sm">London Open</div>
+                    <p class="text-xs text-gray-400">Liquidity grab session & high-volatility scalping breakouts.</p>
+                </div>
+
+                <div class="bg-darkbg/50 p-4 rounded-xl border border-cardborder space-y-1.5">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-brandyellow font-semibold">20:00 UTC+8 (NY Open)</span>
+                        <span class="text-[10px] bg-brandyellow/20 text-brandyellow px-2 py-0.5 rounded font-bold">Upcoming</span>
+                    </div>
+                    <div class="font-bold text-white text-sm">NY Open Session</div>
+                    <p class="text-xs text-gray-400">New York volume expansion, USD news impact & target TP2 run.</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // State Initialization
+        let currentPrice = parseFloat(localStorage.getItem('vantage_current_price')) || 4143.40;
+        document.getElementById('current-price-input').value = currentPrice.toFixed(2);
+
+        // Real-time Clock & Countdown Loop
+        setInterval(() => {
+            const now = new Date();
+            
+            // Server Time Simulation (UTC+3)
+            const utc3Time = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (3 * 3600000));
+            const hours = String(utc3Time.getHours()).padStart(2, '0');
+            const minutes = String(utc3Time.getMinutes()).padStart(2, '0');
+            const seconds = String(utc3Time.getSeconds()).padStart(2, '0');
+            
+            document.getElementById('server-time').innerText = `${hours}:${minutes}:${seconds} UTC+3`;
+            document.getElementById('server-time-details').innerText = `${hours}:${minutes}:${seconds} VANTAGE REAL`;
+            document.getElementById('last-sync-time').innerText = now.toLocaleTimeString();
+
+            // Next Alert Countdown (15:00 UTC+8)
+            const target = new Date(now);
+            target.setHours(15, 0, 0, 0);
+            if (now > target) target.setDate(target.getDate() + 1);
+            
+            const diff = target - now;
+            const h = String(Math.floor((diff / (1000 * 60 * 60)) % 24)).padStart(2, '0');
+            const m = String(Math.floor((diff / 1000 / 60) % 60)).padStart(2, '0');
+            const s = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
+            document.getElementById('next-countdown').innerText = `${h}:${m}:${s}`;
+        }, 1000);
+
+        function onPriceChange(val) {
+            currentPrice = parseFloat(val) || 0;
+            localStorage.setItem('vantage_current_price', currentPrice);
+            calculateMetrics();
+        }
+
+        function adjustPrice(amount) {
+            currentPrice += amount;
+            document.getElementById('current-price-input').value = currentPrice.toFixed(2);
+            localStorage.setItem('vantage_current_price', currentPrice);
+            calculateMetrics();
+        }
+
+        function syncNow(e) {
+            calculateMetrics();
+            const btn = e.currentTarget;
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = `✅ SYNCED!`;
+            setTimeout(() => btn.innerHTML = originalHTML, 1200);
+        }
+
+        function triggerReadyBuy() {
+            currentPrice = 4135.50;
+            document.getElementById('current-price-input').value = currentPrice.toFixed(2);
+            localStorage.setItem('vantage_current_price', currentPrice);
+            calculateMetrics();
+        }
+
+        function triggerReadySell() {
+            currentPrice = 4160.50;
+            document.getElementById('current-price-input').value = currentPrice.toFixed(2);
+            localStorage.setItem('vantage_current_price', currentPrice);
+            calculateMetrics();
+        }
+
+        let confettiTriggered = false;
+
+        function calculateMetrics() {
+            const entryPrice = parseFloat(document.getElementById('order-entry').value) || 4135.00;
+            const gap = currentPrice - entryPrice;
+
+            // Update pending order tracker elements
+            document.getElementById('tracker-current-price').innerText = currentPrice.toFixed(2);
+            
+            const gapEl = document.getElementById('tracker-gap');
+            gapEl.innerText = (gap >= 0 ? '+' : '') + gap.toFixed(2) + '$';
+
+            // Calculate Floating PnL ($10 per $1 move for 0.10 lot size on XAUUSD)
+            const pnl = gap * 10;
+            const pnlEl = document.getElementById('floating-pnl');
+            pnlEl.innerText = (pnl >= 0 ? '+$' : '-$') + Math.abs(pnl).toFixed(2);
+            pnlEl.className = `font-mono font-bold text-sm ${pnl >= 0 ? 'text-brandgreen' : 'text-brandred'}`;
+
+            // Banner & Blinking Logic Implementation
+            const banner = document.getElementById('status-banner');
+            const bannerText = document.getElementById('banner-text');
+            const buyZone = document.getElementById('buy-zone-level');
+
+            banner.className = "p-4 sm:p-5 rounded-xl text-center font-bold text-sm sm:text-base md:text-lg transition-all duration-300";
+            buyZone.className = "flex justify-between items-center bg-darkbg/60 p-3 rounded-xl border border-cardborder transition-all";
+
+            if (gap < 1 && gap > -1) {
+                // TRIGGERED (< 1$)
+                banner.className += " bg-emerald-500 text-darkbg animate-blink glow-green scale-102";
+                bannerText.innerHTML = `🚀 TRIGGERED! PRICE AT ENTRY - CONFIRMED FILL (Gap: ${gap.toFixed(2)}$) 🚀`;
+                buyZone.className += " border-brandgreen bg-green-950/40 animate-blink";
+                
+                if (!confettiTriggered) {
+                    confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+                    confettiTriggered = true;
+                }
+            } else if (gap < 5 && gap >= 1) {
+                // READY TO BUY (< 5$)
+                banner.className += " bg-green-950/90 text-brandgreen border-2 border-brandgreen animate-blink glow-green";
+                bannerText.innerHTML = `🔥 READY TO ENTRY - BUY NOW 🔥 (Gap +${gap.toFixed(2)}$)`;
+                buyZone.className += " border-brandgreen animate-blink";
+                confettiTriggered = false;
+            } else if (currentPrice >= 4153 && currentPrice <= 4162) {
+                // READY TO SELL (Near 4161 High)
+                banner.className += " bg-red-950/90 text-brandred border-2 border-brandred animate-blink glow-red";
+                bannerText.innerHTML = `🔴 READY TO SELL - REJECTION AT 4161 (Current: ${currentPrice.toFixed(2)})`;
+                confettiTriggered = false;
+            } else if (gap > 10) {
+                // YELLOW WARNING (> 10$)
+                banner.className += " bg-yellow-950/80 text-brandyellow border border-brandyellow/60 glow-yellow";
+                bannerText.innerHTML = `⚠️ Price far from entry (+${gap.toFixed(2)}$) - Waiting for pullback`;
+                confettiTriggered = false;
+            } else {
+                // WAITING STATE
+                banner.className += " bg-cardbg text-gray-300 border border-cardborder";
+                bannerText.innerHTML = `WAITING FOR FILL - Gap ${gap >= 0 ? '+' : ''}${gap.toFixed(2)}$`;
+                confettiTriggered = false;
+            }
+        }
+
+        function updateAccountCalculations() {
+            const eq = parseFloat(document.getElementById('account-equity').value) || 6951.06;
+            document.getElementById('account-balance').innerText = '$' + eq.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('free-margin').innerText = '$' + eq.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('calc-balance').value = eq.toFixed(2);
+            calculatePositionSize();
+        }
+
+        function calculatePositionSize() {
+            const bal = parseFloat(document.getElementById('calc-balance').value) || 6951.06;
+            const riskPct = parseFloat(document.getElementById('risk-slider').value) || 1.0;
+            
+            document.getElementById('calc-bal-display').innerText = '$' + bal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('risk-pct-display').innerText = riskPct.toFixed(1) + '%';
+
+            const riskAmount = bal * (riskPct / 100);
+            const slDist = 7.0; // $7 SL distance
+            const lot = riskAmount / (slDist * 10);
+
+            document.getElementById('calc-lot-result').innerText = lot.toFixed(2);
+        }
+
+        // Initial Load Calculations
+        calculateMetrics();
+        calculatePositionSize();
+    </script>
+</body>
+</html>
+```
