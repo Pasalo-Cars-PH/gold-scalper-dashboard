@@ -3,181 +3,164 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Gold Trading Dashboard</title>
+<title>XAUUSD M1 Scalp Dashboard</title>
 <style>
 :root{--bg:#07090f;--card:#0d121c;--card2:#101726;--line:#1c2638;--tx:#e8edf5;--mut:#6f7d93;--grn:#00e5a8;--grn2:#06382c;--red:#ff4d6a;--red2:#3a1019;--amb:#f5b942;--amb2:#33260a;--blu:#4da3ff;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f1f4f9;--card:#fff;--card2:#f6f8fc;--line:#d9e0ec;--tx:#0e1626;--mut:#5d6b82;--grn:#00936c;--grn2:#dcf6ec;--red:#d62845;--red2:#fde4e8;--amb:#a86d00;--amb2:#fdf1d6;--blu:#1a6fd1;color-scheme:light}}
-:root[data-theme="dark"]{color-scheme:dark}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px}
-.tick{overflow:hidden;white-space:nowrap;border-bottom:1px solid var(--line);color:var(--mut);font-size:11px;letter-spacing:.06em;padding:8px 0}
-.tick span{display:inline-block;padding-left:100%;animation:s 40s linear infinite}
-@keyframes s{to{transform:translateX(-100%)}}
 .wrap{max-width:1180px;margin:0 auto;padding:14px}
 .hd{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;margin-bottom:14px}
 .hd h1{font-size:18px;margin:0;font-family:system-ui,sans-serif}
 .sub{color:var(--mut);font-size:11px;margin-top:3px}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .chip{border:1px solid var(--line);background:var(--card);border-radius:20px;padding:6px 12px;font-size:11px;color:var(--mut)}
 .chip.ok{color:var(--grn);border-color:var(--grn)}.chip.bad{color:var(--red);border-color:var(--red)}
 .g{display:grid;gap:12px;margin-bottom:12px}
-.g5{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
 .g3{grid-template-columns:repeat(auto-fit,minmax(290px,1fr))}
-.g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
 .c{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;position:relative}
 .c.gn{background:linear-gradient(160deg,var(--grn2),var(--card));border-color:var(--grn)}
 .c.rd{background:linear-gradient(160deg,var(--red2),var(--card));border-color:var(--red)}
-.c.am{background:linear-gradient(160deg,var(--amb2),var(--card));border-color:var(--amb)}
 .l{font-size:10px;letter-spacing:.16em;color:var(--mut);text-transform:uppercase}
 .big{font-size:24px;font-weight:700;margin:8px 0 6px;font-family:system-ui,sans-serif}
+.px{font-family:system-ui,sans-serif;font-size:clamp(38px,10vw,58px);font-weight:800;letter-spacing:-.02em;margin:8px 0 4px}
 .s{font-size:11px;color:var(--mut);line-height:1.5}
-.tag{position:absolute;top:-1px;right:12px;background:var(--grn);color:#02150f;font-size:9px;font-weight:700;padding:3px 8px;border-radius:0 0 6px 6px;letter-spacing:.06em}
-.bar{height:4px;background:var(--line);border-radius:3px;margin-top:10px;overflow:hidden}.bar i{display:block;height:100%;background:var(--grn)}
-.up{color:var(--grn)}.dn{color:var(--red)}
-.t{border:1px solid var(--line);background:var(--card2);border-radius:10px;padding:10px 12px;margin-top:10px;position:relative}
-.t.w{border-color:var(--grn);background:var(--grn2)}
-.t b.k{font-size:11px;letter-spacing:.1em}
-.pill{font-size:9px;padding:2px 6px;border-radius:4px;background:var(--line);margin-left:6px}
-.t .r{font-size:15px;margin:6px 0 4px;display:flex;justify-content:space-between;font-weight:700}
-.ch{height:170px}
-.mini{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
-.mini div{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:8px}
-.px{font-family:system-ui,sans-serif;font-size:clamp(40px,11vw,64px);font-weight:800;letter-spacing:-.02em;margin:12px 0 4px}
-.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.in{display:flex;gap:8px;margin-top:12px}
-.in input{flex:1;min-width:0;background:var(--card2);border:1px solid var(--line);color:var(--tx);border-radius:8px;padding:12px;font:inherit;font-size:16px}
-button{background:var(--grn);color:#02150f;border:0;border-radius:8px;padding:12px 14px;font:inherit;font-weight:800;letter-spacing:.06em;cursor:pointer}
+.up{color:var(--grn)}.dn{color:var(--red)}.am{color:var(--amb)}
+.badge{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.1em;padding:4px 10px;border-radius:6px;background:var(--line);color:var(--mut)}
+.badge.b{background:var(--grn);color:#02150f}.badge.s{background:var(--red);color:#fff}
+.lv{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+.lv div{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:6px}
+.lv b{display:block;font-size:13px;margin-top:2px}
+.ch{width:100%;height:280px;display:block;margin-top:10px}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+input,select{background:var(--card2);border:1px solid var(--line);color:var(--tx);border-radius:8px;padding:8px;font:inherit;font-size:16px;width:110px}
+select{width:auto}
+button{background:var(--grn);color:#02150f;border:0;border-radius:8px;padding:9px 13px;font:inherit;font-weight:800;cursor:pointer}
 button.o{background:transparent;color:var(--grn);border:1px solid var(--grn)}
-.lv{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
-.lv div{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:8px}
-.lv b{display:block;font-size:16px;margin-top:3px;font-family:system-ui,sans-serif}
 .ft{color:var(--mut);font-size:10px;text-align:center;margin:18px 0 6px}
 </style>
 </head>
 <body>
-<div class="tick"><span id="tk">LOADING…</span></div>
 <div class="wrap">
  <div class="hd">
-  <div><h1>Gold Trading Dashboard</h1><div class="sub">Vantage Demo · Balance $6941.96 · Last WIN +$88.70</div></div>
-  <div style="display:flex;gap:8px"><div class="chip" id="st">FETCHING…</div><button id="kb" class="o" style="padding:6px 12px">🔑</button></div>
+  <div><h1>XAUUSD · M1 Scalp Dashboard</h1><div class="sub" id="sub">Twelve Data · 1min candles · EMA 9/21/50 · RSI 14 · ATR 14</div></div>
+  <div class="ctl"><span class="chip" id="st">FETCHING…</span>
+   <select id="iv"><option value="60000">60s</option><option value="120000">120s</option><option value="0">Manual</option></select>
+   <button class="o" id="rf">↻</button><button class="o" id="kb">🔑</button></div>
  </div>
 
- <div class="g g5">
-  <div class="c gn"><div class="l">Balance</div><div class="big">$6941.96</div><div class="s">USD · Vantage Demo · Prev $6853.26 → +$88.70 (1.29%)</div><div class="bar"><i style="width:55%"></i></div></div>
-  <div class="c"><div class="l">Equity</div><div class="big">$6941.96</div><div class="s">Floating 0.00 · No open pos</div></div>
-  <div class="c"><div class="l">Free Margin</div><div class="big">$6941.96</div><div class="s">Margin Level 0% · 0.1 lot BUY pending</div></div>
-  <div class="c rd"><div class="l">Drawdown Recovery</div><div class="big dn">$-369.00 <span class="s">from $7222</span></div><div class="s">Prev 6853.26 · Now 6941.96 · +$88.70 recovered</div><div class="bar"><i style="width:24%;background:var(--red)"></i></div><div class="s" style="margin-top:6px">-5.11% peak · +1.29% recovery</div></div>
-  <div class="c gn"><span class="tag">LATEST WIN</span><div class="l">Last Closed</div><div class="big up">+$88.70</div><div class="s">SELL 4190.00 → 4181.13<br>887 pts · 0.21% · 12:07-12:52 Oct 16</div></div>
+ <div class="g g4">
+  <div class="c gn" id="pc"><div class="l">XAUUSD</div><div class="px" id="px">—</div><div class="s" id="pm">—</div></div>
+  <div class="c" id="bc"><div class="l">M1 Bias</div><div class="big" id="bias">—</div><div class="s" id="bs">—</div></div>
+  <div class="c"><div class="l">Indicators</div><div class="s" id="ind" style="margin-top:8px;line-height:1.9">—</div></div>
+  <div class="c"><div class="l">Risk Calc</div>
+   <div class="row"><input id="bal" type="number" inputmode="decimal" step="0.01" title="Balance"><input id="rk" type="number" inputmode="decimal" step="0.1" title="Risk %" style="width:70px"></div>
+   <div class="s" style="margin-top:8px">Balance $ · Risk %<br>1 lot = $100 per $1 move</div></div>
  </div>
 
- <div class="g g3">
-  <div class="c">
-   <div class="l" style="color:var(--tx);font-size:12px">Trade History <span class="up" style="float:right">2W 1L · +$317.40 NET</span></div>
-   <div class="t w"><b class="k">SELL LIMIT</b><span class="pill up">WIN</span><div class="r"><span>4190.00 → 4181.13</span><span class="up">+$88.70</span></div><div class="s">887 pts · 0.21% · 12:07-12:52 Oct 16 · S/L 4198 T/P 4175 · Closed early at 4181</div></div>
-   <div class="t"><b class="k">BUY LIMIT</b><span class="pill up">WIN</span><div class="r"><span>4138.00 → 4150.00</span><span class="up">+$271.20</span></div><div class="s">1200 pts · 0.29% · 09:14 Oct 16 · S/L 4130 T/P 4150 · TP HIT 4150</div></div>
-   <div class="t"><b class="k">SELL</b><span class="pill dn">LOSS</span><div class="r"><span>4175.00 → 4165.00</span><span class="dn">-$42.50</span></div><div class="s">-1000 pts · -0.24% · Oct 15 · S/L 4185 T/P 4160 · SL</div></div>
-   <div class="s" style="margin-top:12px">SESSION P/L TODAY +$359.90 · 2R · Recovery from 6853.26</div>
-  </div>
-
-  <div class="c">
-   <div class="l" style="color:var(--tx);font-size:12px">Equity Curve <span style="float:right">6853 → 6942 IMPROVING</span></div>
-   <svg class="ch" viewBox="0 0 300 150" preserveAspectRatio="none" style="width:100%;margin-top:10px">
-    <path d="M10,15 C70,70 120,118 160,118 S250,100 290,92" fill="none" stroke="var(--grn)" stroke-width="2.5" vector-effect="non-scaling-stroke"/>
-    <circle cx="10" cy="15" r="3" fill="var(--grn)"/><circle cx="160" cy="118" r="3" fill="var(--grn)"/><circle cx="290" cy="92" r="3" fill="var(--grn)"/>
-   </svg>
-   <div class="s" style="display:flex;justify-content:space-between"><span>Oct 14</span><span>Oct 15 PM</span><span>Oct 16</span></div>
-   <div class="mini"><div><div class="l">Peak</div><b>$7222</b></div><div><div class="l">Low</div><b class="dn">$6853</b></div><div><div class="l">Now</div><b class="up">$6941.96</b></div></div>
-  </div>
-
-  <div>
-   <div class="c am"><div class="l">Risk Management <span class="pill" style="color:var(--amb)">WARNING</span></div>
-    <div class="big" style="font-size:16px;font-family:inherit">0.1 lot = $80 risk</div>
-    <div class="s" id="rk">1.15% of $6941.96</div><div class="bar"><i style="width:60%;background:var(--amb)"></i></div>
-    <div class="s" style="margin-top:8px">Recommended 0.08 lot = $64 (0.92%) for 1% rule. Current slightly over but acceptable for recovery trade.</div></div>
-   <div class="c" style="margin-top:12px"><div class="l">Next Targets</div>
-    <div class="t"><div class="r" style="font-size:13px"><span>If &lt; 4180</span><span class="up">4168 support</span></div><div class="s">Breakdown · Your BUY LIMIT</div></div>
-    <div class="t" style="background:var(--red2)"><div class="r" style="font-size:13px"><span>Then</span><span class="dn">4160 SL</span></div><div class="s">SL level · -8$ risk</div></div>
-    <div class="t w"><div class="s" id="cur">Current —</div></div>
-   </div>
-  </div>
+ <div class="c" style="margin-bottom:12px">
+  <div class="l" style="color:var(--tx);font-size:12px">M1 Chart · last 60 candles <span id="rng" style="float:right"></span></div>
+  <svg class="ch" id="svg" viewBox="0 0 600 280" preserveAspectRatio="none"></svg>
+  <div class="s"><span style="color:var(--grn)">━</span> EMA9 &nbsp; <span style="color:var(--amb)">━</span> EMA21 &nbsp; <span style="color:var(--red)">━</span> EMA50 &nbsp; <span style="color:var(--blu)">┅</span> plan entry / SL / TP1</div>
  </div>
 
- <div class="g g2">
-  <div class="c">
-   <div class="row"><span class="chip" style="color:var(--tx)">XAUUSD <span id="chg" class="up"></span></span><span class="chip" id="src">FETCHING…</span></div>
-   <div class="px" id="px">—</div>
-   <div class="s" id="meta">Source: waiting for Twelve Data…</div>
-   <div class="row"><span class="chip" id="hi">H —</span><span class="chip" id="lo">L —</span><span class="chip" id="mk">—</span></div>
-   <div class="row"><span class="chip ok">SELL 4190 CLOSED +$88.70</span><span class="chip ok">BUY 4168 ACTIVE</span></div>
-   <div class="l" style="margin-top:16px">Enter current gold price from MT4 / Vantage (override)</div>
-   <div class="in"><input id="mi" type="number" inputmode="decimal" step="0.01" placeholder="4177.76"><button id="sp">SET PRICE</button><button id="lv" class="o">LIVE</button></div>
-  </div>
-
-  <div class="c">
-   <div class="l" style="color:var(--tx);font-size:12px">Entry Levels <span style="float:right">SCALP · 1:2 RR · BAL $6941.96</span></div>
-   <div class="t w"><span class="tag" style="right:10px">ACTIVE PENDING · 0.1 LOT</span>
-    <div class="s" style="margin-top:6px">BUY LIMIT · BLUE DASHED ON CHART</div>
-    <div class="big" style="margin:6px 0">4168.00 <span class="s" id="ed">Entry</span></div>
-    <div class="lv"><div><span class="s">SL</span><b>4160</b><span class="s dn">-8$ · $80 risk</span></div><div><span class="s">TP1</span><b>4181</b><span class="s up">+13$</span></div><div><span class="s">TP2</span><b>4190</b><span class="s up">+22$</span></div></div>
-    <div class="bar"><i id="pg" style="width:0"></i></div>
-    <div class="s" style="margin-top:6px" id="pgt">—</div>
-    <div class="s">Risk: 0.1 lot = $80 (1.15% of $6942) ⚠ slightly above 1%</div></div>
-   <div class="t"><span class="tag" style="right:10px">CLOSED / PROFIT +$88.70</span>
-    <div class="s" style="margin-top:6px">SELL LIMIT · CLOSED WIN</div>
-    <div class="big" style="margin:6px 0">4190.00 <span class="s">Entry → 4181.13 EXIT</span></div>
-    <div class="lv"><div><span class="s">SL</span><b>4198</b></div><div><span class="s">TP1</span><b>4175</b></div><div><span class="s">EXIT</span><b class="up">4181.13</b></div></div></div>
-  </div>
- </div>
- <div class="ft">Demo/analysis tool lang · hindi financial advice · Twelve Data spot price ≠ MT4/Vantage feed, gamitin ang SET PRICE kung gusto exact broker price.</div>
+ <div class="g g3" id="plans"></div>
+ <div class="ft">Analysis tool lang, hindi financial advice. Twelve Data spot ≠ Vantage feed. Para sa M1 scalps, mag-confirm muna sa MT4/Vantage chart bago pumasok.</div>
 </div>
 
 <script>
 (function(){
 var $=function(i){return document.getElementById(i)};
-var live=null,manual=null,info={},err=null,fmt=function(n){return Number(n).toFixed(2)};
-function parse(p){
-  if(p&&typeof p==="object"&&!Array.isArray(p))return p;
-  if(typeof p==="string"){var l=p.trim().split("\n");if(l.length>=2){var h=l[0].split(";"),v=l[1].split(";"),o={};h.forEach(function(k,i){o[k.trim()]=v[i]});return o}}
-  return null;
+var f2=function(n){return Number(n).toFixed(2)};
+var KEY=null,bars=[],err=null,timer=null,lastT="";
+try{KEY=localStorage.getItem("td_key");$("bal").value=localStorage.getItem("m1_bal")||"6941.96";$("rk").value=localStorage.getItem("m1_rk")||"1"}catch(e){$("bal").value="6941.96";$("rk").value="1"}
+function ema(a,p){var k=2/(p+1),r=[],e=a[0];for(var i=0;i<a.length;i++){e=i?a[i]*k+e*(1-k):a[0];r.push(e)}return r}
+function rsi(c,p){var g=0,l=0,i,d;for(i=1;i<=p;i++){d=c[i]-c[i-1];if(d>=0)g+=d;else l-=d}g/=p;l/=p;
+ for(i=p+1;i<c.length;i++){d=c[i]-c[i-1];g=(g*(p-1)+(d>0?d:0))/p;l=(l*(p-1)+(d<0?-d:0))/p}return l===0?100:100-100/(1+g/l)}
+function atr(b,p){var tr=[],i,a=0;for(i=1;i<b.length;i++){tr.push(Math.max(b[i].h-b[i].l,Math.abs(b[i].h-b[i-1].c),Math.abs(b[i].l-b[i-1].c)))}
+ for(i=0;i<p;i++)a+=tr[i];a/=p;for(i=p;i<tr.length;i++)a=(a*(p-1)+tr[i])/p;return a}
+function mk(side,entry,d){return{side:side,entry:entry,risk:d,sl:entry-side*d,tp1:entry+side*d,tp2:entry+side*2*d}}
+function lots(risk){var bal=parseFloat($("bal").value)||0,rp=parseFloat($("rk").value)||0;
+ var L=Math.max(0.01,Math.floor(bal*rp/100/(risk*100)*100)/100);return{lot:L,usd:L*risk*100}}
+function analyze(){
+ var c=bars.map(function(b){return b.c}),n=bars.length,last=bars[n-1],px=last.c;
+ var e9=ema(c,9),e21=ema(c,21),e50=ema(c,50),E9=e9[n-1],E21=e21[n-1],E50=e50[n-1],R=rsi(c,14),A=atr(bars,14);
+ var d=Math.max(A*1.5,2),out=[];
+ // A: EMA pullback trend
+ var up=E9>E21&&E21>E50&&px>E50,dn=E9<E21&&E21<E50&&px<E50,a={name:"EMA Pullback Trend",sig:0};
+ if(up){a.sig=1;a.p=mk(1,px>E21+0.3*A?E21:px,d);a.why="EMA 9>21>50 uptrend · "+(px>E21+0.3*A?"BUY LIMIT sa EMA21 pullback":"malapit na sa EMA21, BUY NOW")}
+ else if(dn){a.sig=-1;a.p=mk(-1,px<E21-0.3*A?E21:px,d);a.why="EMA 9<21<50 downtrend · "+(px<E21-0.3*A?"SELL LIMIT sa EMA21 pullback":"malapit na sa EMA21, SELL NOW")}
+ else a.why="Walang malinis na EMA stack (9/21/50). Hintayin ang trend.";
+ out.push(a);
+ // B: RSI extreme fade
+ var b={name:"RSI Extreme Fade",sig:0};
+ if(R<30){b.sig=1;b.p=mk(1,px,Math.max(A*1.2,2));b.why="RSI "+R.toFixed(1)+" oversold · fade BUY, mabilis na TP"}
+ else if(R>70){b.sig=-1;b.p=mk(-1,px,Math.max(A*1.2,2));b.why="RSI "+R.toFixed(1)+" overbought · fade SELL, mabilis na TP"}
+ else b.why="RSI "+R.toFixed(1)+" · nasa 30-70 zone, walang extreme.";
+ out.push(b);
+ // C: 15-candle range break & retest
+ var rr=bars.slice(n-16,n-1),rh=Math.max.apply(null,rr.map(function(x){return x.h})),rl=Math.min.apply(null,rr.map(function(x){return x.l})),cc={name:"15m Range Break & Retest",sig:0};
+ if(px>rh){cc.sig=1;cc.p=mk(1,rh,Math.max(A*1.2,2));cc.why="Break sa itaas ng "+f2(rh)+" · BUY LIMIT sa retest"}
+ else if(px<rl){cc.sig=-1;cc.p=mk(-1,rl,Math.max(A*1.2,2));cc.why="Break sa ibaba ng "+f2(rl)+" · SELL LIMIT sa retest"}
+ else cc.why="Range "+f2(rl)+" – "+f2(rh)+" · hintayin ang break (BUY STOP "+f2(rh+0.5)+" / SELL STOP "+f2(rl-0.5)+")";
+ out.push(cc);
+ return{px:px,last:last,e9:e9,e21:e21,e50:e50,E9:E9,E21:E21,E50:E50,R:R,A:A,s:out}
 }
 function render(){
-  var p=manual!=null?manual:(live!=null?live:null);
-  var chip=$("st"),src=$("src");
-  if(err){chip.className="chip bad";chip.textContent=err;src.textContent="NO LIVE FEED"}
-  else if(manual!=null){chip.className="chip ok";chip.textContent="MANUAL · "+fmt(manual);src.textContent="MANUAL OVERRIDE"}
-  else if(live!=null){chip.className="chip ok";chip.textContent="LIVE · "+(info.time||"");src.textContent="LIVE · TWELVE DATA"}
-  else{chip.className="chip";chip.textContent="FETCHING…";src.textContent="FETCHING…"}
-  if(p==null){$("px").textContent="—";return}
-  $("px").textContent=fmt(p);
-  var pc=parseFloat(info.percent_change);
-  if(!isNaN(pc)){$("chg").className=pc>=0?"up":"dn";$("chg").textContent=(pc>=0?"▲ ":"▼ ")+Math.abs(pc).toFixed(2)+"%"}
-  $("hi").textContent="H "+(info.high?fmt(info.high):"—");
-  $("lo").textContent="L "+(info.low?fmt(info.low):"—");
-  $("mk").textContent=info.is_market_open==="true"||info.is_market_open===true?"MARKET OPEN":"MARKET CLOSED";
-  $("meta").textContent="Source: "+(manual!=null?"MANUAL MT4/Vantage":"Twelve Data XAU/USD spot")+" · prev close "+(info.previous_close?fmt(info.previous_close):"—");
-  var d=p-4168;$("ed").textContent="Entry · "+(d>=0?fmt(d)+"$ away":fmt(-d)+"$ below entry");
-  var pg=Math.max(0,Math.min(1,1-Math.abs(d)/52));$("pg").style.width=(pg*100).toFixed(0)+"%";
-  $("pgt").textContent=Math.round(pg*100)+"% to entry · "+fmt(Math.abs(d))+"$ away · "+(p<=4168?"FILLED ZONE":"ACTIVE");
-  $("cur").textContent="Current "+fmt(p)+" → 4168 = ~"+fmt(Math.abs(d))+"$ away · ACTIVE pending blue dashed";
-  $("tk").textContent="XAUUSD "+fmt(p)+" ▲ "+(isNaN(pc)?"":pc.toFixed(2)+"%")+"   ·   HIGH "+(info.high?fmt(info.high):"—")+"   ·   LOW "+(info.low?fmt(info.low):"—")+"   ·   BUY 4168 ACTIVE   ·   SELL 4190 CLOSED +$88.70   ·   NY SESSION   ·   BAL $6941.96   ·   ";
+ var chip=$("st");
+ if(err){chip.className="chip bad";chip.textContent=err}
+ else if(bars.length){chip.className="chip ok";chip.textContent="LIVE · "+lastT}
+ else{chip.className="chip";chip.textContent="FETCHING…"}
+ if(bars.length<60){return}
+ var r=analyze(),n=bars.length,prev=bars[n-2].c,ch=r.px-prev;
+ $("px").textContent=f2(r.px);
+ $("pm").innerHTML='<span class="'+(ch>=0?"up":"dn")+'">'+(ch>=0?"▲ ":"▼ ")+f2(Math.abs(ch))+'</span> vs prev M1 · H '+f2(r.last.h)+' · L '+f2(r.last.l)+'<br>Candle: '+r.last.t;
+ var sc=r.s.reduce(function(a,x){return a+x.sig},0);
+ $("bias").innerHTML=sc>0?'<span class="up">BUY BIAS</span>':sc<0?'<span class="dn">SELL BIAS</span>':'<span class="am">WAIT</span>';
+ $("bs").textContent=r.s.filter(function(x){return x.sig>0}).length+" buy · "+r.s.filter(function(x){return x.sig<0}).length+" sell · "+r.s.filter(function(x){return !x.sig}).length+" wait (sa 3 strategies)";
+ $("ind").innerHTML='EMA9 <b>'+f2(r.E9)+'</b><br>EMA21 <b>'+f2(r.E21)+'</b><br>EMA50 <b>'+f2(r.E50)+'</b><br>RSI14 <b class="'+(r.R>70?"dn":r.R<30?"up":"")+'">'+r.R.toFixed(1)+'</b> · ATR14 <b>'+f2(r.A)+'</b>';
+ var h="";r.s.forEach(function(x){
+  var cls=x.sig>0?"b":x.sig<0?"s":"",lab=x.sig>0?"BUY":x.sig<0?"SELL":"WAIT";
+  h+='<div class="c '+(x.sig>0?"gn":x.sig<0?"rd":"")+'"><div class="l">'+x.name+'</div><div style="margin:8px 0"><span class="badge '+cls+'">'+lab+'</span></div><div class="s">'+x.why+'</div>';
+  if(x.p){var p=x.p,k=lots(p.risk);
+   h+='<div class="lv"><div><span class="s">ENTRY</span><b>'+f2(p.entry)+'</b></div><div><span class="s">SL</span><b class="dn">'+f2(p.sl)+'</b></div><div><span class="s">TP1</span><b class="up">'+f2(p.tp1)+'</b></div><div><span class="s">TP2</span><b class="up">'+f2(p.tp2)+'</b></div></div>'+
+   '<div class="s" style="margin-top:8px">SL $'+f2(p.risk)+' · lot <b>'+k.lot.toFixed(2)+'</b> = risk $'+f2(k.usd)+' · RR 1:1 / 1:2</div>'}
+  h+='</div>'});
+ $("plans").innerHTML=h;
+ draw(r);
 }
-$("sp").onclick=function(){var v=parseFloat($("mi").value);if(!isNaN(v)&&v>0){manual=v;render()}};
-$("lv").onclick=function(){manual=null;$("mi").value="";render()};
-render();
-var KEY=null;try{KEY=localStorage.getItem("td_key")}catch(e){}
-function setKey(){var k=prompt("Twelve Data API key:");if(k&&k.trim()){KEY=k.trim();try{localStorage.setItem("td_key",KEY)}catch(e){}poll()}}
+function draw(r){
+ var n=bars.length,N=60,v=bars.slice(n-N),off=n-N,pl=null;
+ for(var i=0;i<r.s.length;i++)if(r.s[i].p){pl=r.s[i].p;break}
+ var hi=Math.max.apply(null,v.map(function(x){return x.h})),lo=Math.min.apply(null,v.map(function(x){return x.l}));
+ if(pl){hi=Math.max(hi,pl.entry,pl.tp1);lo=Math.min(lo,pl.entry,pl.sl)}
+ var pad=(hi-lo)*0.05;hi+=pad;lo-=pad;
+ var Y=function(p){return 280-(p-lo)/(hi-lo)*280},w=600/N,s="",j;
+ for(j=0;j<N;j++){var b=v[j],x=j*w+w/2,up=b.c>=b.o,col=up?"var(--grn)":"var(--red)",t=Y(Math.max(b.o,b.c)),bt=Y(Math.min(b.o,b.c));
+  s+='<line x1="'+x+'" x2="'+x+'" y1="'+Y(b.h)+'" y2="'+Y(b.l)+'" stroke="'+col+'" stroke-width="1" vector-effect="non-scaling-stroke"/><rect x="'+(x-w*0.32)+'" y="'+t+'" width="'+(w*0.64)+'" height="'+Math.max(1,bt-t)+'" fill="'+col+'"/>'}
+ [[r.e9,"var(--grn)"],[r.e21,"var(--amb)"],[r.e50,"var(--red)"]].forEach(function(e){
+  var pts=[];for(j=0;j<N;j++)pts.push((j*w+w/2)+","+Y(e[0][off+j]));
+  s+='<polyline points="'+pts.join(" ")+'" fill="none" stroke="'+e[1]+'" stroke-width="1.6" vector-effect="non-scaling-stroke" opacity=".9"/>'});
+ if(pl)[pl.entry,pl.sl,pl.tp1].forEach(function(p){s+='<line x1="0" x2="600" y1="'+Y(p)+'" y2="'+Y(p)+'" stroke="var(--blu)" stroke-width="1" stroke-dasharray="5 4" vector-effect="non-scaling-stroke"/>'});
+ $("svg").innerHTML=s;$("rng").textContent=f2(lo)+" – "+f2(hi);
+}
 function poll(){
-  if(!KEY){err="TAP 🔑 TO SET API KEY";render();return}
-  fetch("https://api.twelvedata.com/quote?symbol=XAU/USD&apikey="+encodeURIComponent(KEY))
-  .then(function(r){return r.json()}).then(function(o){
-    if(o&&o.close){live=parseFloat(o.close);info=o;info.time=new Date().toLocaleTimeString("en-PH",{hour12:false});err=null}
-    else err=(o&&o.message?String(o.message).slice(0,42).toUpperCase():"FEED ERROR");
-    render();
-  }).catch(function(){err="NETWORK ERROR";render()});
+ if(!KEY){err="TAP 🔑 PARA SA API KEY";render();return}
+ fetch("https://api.twelvedata.com/time_series?symbol=XAU/USD&interval=1min&outputsize=150&order=ASC&apikey="+encodeURIComponent(KEY))
+ .then(function(r){return r.json()}).then(function(o){
+  if(o&&o.values&&o.values.length){
+   bars=o.values.map(function(x){return{t:x.datetime.slice(11,16),o:+x.open,h:+x.high,l:+x.low,c:+x.close}});
+   err=null;lastT=new Date().toLocaleTimeString("en-PH",{hour12:false})}
+  else err=(o&&o.message?String(o.message).slice(0,42).toUpperCase():"FEED ERROR");
+  render()}).catch(function(){err="NETWORK ERROR";render()});
 }
-$("kb").onclick=setKey;
-poll();
-setInterval(function(){if(!document.hidden)poll()},120000);
+function sched(){clearInterval(timer);var ms=+$("iv").value;if(ms)timer=setInterval(function(){if(!document.hidden)poll()},ms)}
+$("kb").onclick=function(){var k=prompt("Twelve Data API key:");if(k&&k.trim()){KEY=k.trim();try{localStorage.setItem("td_key",KEY)}catch(e){}poll()}};
+$("rf").onclick=poll;$("iv").onchange=sched;
+["bal","rk"].forEach(function(id){$(id).onchange=function(){try{localStorage.setItem(id==="bal"?"m1_bal":"m1_rk",$(id).value)}catch(e){}render()}});
+render();poll();sched();
 })();
 </script>
 </body>
