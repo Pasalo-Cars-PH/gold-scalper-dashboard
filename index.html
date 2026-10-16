@@ -1,204 +1,184 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gold V9.7 - SELL MODE PULLBACK</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        darkbg: '#0a0a0c',
-                        cardbg: '#141418',
-                        cardborder: '#22222a',
-                        brandyellow: '#ffd32a',
-                        brandgreen: '#2ed573',
-                        brandred: '#ff4757'
-                    },
-                    fontFamily: {
-                        mono: ['Courier New', Courier, monospace],
-                        sans: ['Inter', sans-serif]
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body, html {
-            background-color: #0a0a0c !important;
-            color: #e5e7eb !important;
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gold Trading Dashboard</title>
+<style>
+:root{--bg:#07090f;--card:#0d121c;--card2:#101726;--line:#1c2638;--tx:#e8edf5;--mut:#6f7d93;--grn:#00e5a8;--grn2:#06382c;--red:#ff4d6a;--red2:#3a1019;--amb:#f5b942;--amb2:#33260a;--blu:#4da3ff;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f1f4f9;--card:#fff;--card2:#f6f8fc;--line:#d9e0ec;--tx:#0e1626;--mut:#5d6b82;--grn:#00936c;--grn2:#dcf6ec;--red:#d62845;--red2:#fde4e8;--amb:#a86d00;--amb2:#fdf1d6;--blu:#1a6fd1;color-scheme:light}}
+:root[data-theme="dark"]{color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px}
+.tick{overflow:hidden;white-space:nowrap;border-bottom:1px solid var(--line);color:var(--mut);font-size:11px;letter-spacing:.06em;padding:8px 0}
+.tick span{display:inline-block;padding-left:100%;animation:s 40s linear infinite}
+@keyframes s{to{transform:translateX(-100%)}}
+.wrap{max-width:1180px;margin:0 auto;padding:14px}
+.hd{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;margin-bottom:14px}
+.hd h1{font-size:18px;margin:0;font-family:system-ui,sans-serif}
+.sub{color:var(--mut);font-size:11px;margin-top:3px}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:20px;padding:6px 12px;font-size:11px;color:var(--mut)}
+.chip.ok{color:var(--grn);border-color:var(--grn)}.chip.bad{color:var(--red);border-color:var(--red)}
+.g{display:grid;gap:12px;margin-bottom:12px}
+.g5{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(290px,1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.c{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;position:relative}
+.c.gn{background:linear-gradient(160deg,var(--grn2),var(--card));border-color:var(--grn)}
+.c.rd{background:linear-gradient(160deg,var(--red2),var(--card));border-color:var(--red)}
+.c.am{background:linear-gradient(160deg,var(--amb2),var(--card));border-color:var(--amb)}
+.l{font-size:10px;letter-spacing:.16em;color:var(--mut);text-transform:uppercase}
+.big{font-size:24px;font-weight:700;margin:8px 0 6px;font-family:system-ui,sans-serif}
+.s{font-size:11px;color:var(--mut);line-height:1.5}
+.tag{position:absolute;top:-1px;right:12px;background:var(--grn);color:#02150f;font-size:9px;font-weight:700;padding:3px 8px;border-radius:0 0 6px 6px;letter-spacing:.06em}
+.bar{height:4px;background:var(--line);border-radius:3px;margin-top:10px;overflow:hidden}.bar i{display:block;height:100%;background:var(--grn)}
+.up{color:var(--grn)}.dn{color:var(--red)}
+.t{border:1px solid var(--line);background:var(--card2);border-radius:10px;padding:10px 12px;margin-top:10px;position:relative}
+.t.w{border-color:var(--grn);background:var(--grn2)}
+.t b.k{font-size:11px;letter-spacing:.1em}
+.pill{font-size:9px;padding:2px 6px;border-radius:4px;background:var(--line);margin-left:6px}
+.t .r{font-size:15px;margin:6px 0 4px;display:flex;justify-content:space-between;font-weight:700}
+.ch{height:170px}
+.mini{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.mini div{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:8px}
+.px{font-family:system-ui,sans-serif;font-size:clamp(40px,11vw,64px);font-weight:800;letter-spacing:-.02em;margin:12px 0 4px}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.in{display:flex;gap:8px;margin-top:12px}
+.in input{flex:1;min-width:0;background:var(--card2);border:1px solid var(--line);color:var(--tx);border-radius:8px;padding:12px;font:inherit;font-size:16px}
+button{background:var(--grn);color:#02150f;border:0;border-radius:8px;padding:12px 14px;font:inherit;font-weight:800;letter-spacing:.06em;cursor:pointer}
+button.o{background:transparent;color:var(--grn);border:1px solid var(--grn)}
+.lv{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.lv div{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:8px}
+.lv b{display:block;font-size:16px;margin-top:3px;font-family:system-ui,sans-serif}
+.ft{color:var(--mut);font-size:10px;text-align:center;margin:18px 0 6px}
+</style>
 </head>
-<body class="bg-[#0a0a0c] text-gray-200 font-sans min-h-screen p-3 md:p-6 max-w-md mx-auto space-y-4">
+<body>
+<div class="tick"><span id="tk">LOADING…</span></div>
+<div class="wrap">
+ <div class="hd">
+  <div><h1>Gold Trading Dashboard</h1><div class="sub">Vantage Demo · Balance $6941.96 · Last WIN +$88.70</div></div>
+  <div style="display:flex;gap:8px"><div class="chip" id="st">FETCHING…</div><button id="kb" class="o" style="padding:6px 12px">🔑</button></div>
+ </div>
 
-    <!-- TOP HEADER STATUS -->
-    <div class="flex justify-between items-center text-[10px] text-gray-400 font-mono tracking-widest uppercase">
-        <div class="flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-brandred animate-pulse"></span>
-            <span class="text-brandred font-bold">V9.7 SELL MODE ACTIVE</span>
-            <span>•</span>
-            <span>M5 DOWNTREND</span>
-        </div>
-        <div>XAUUSD • BALANCE: $6,985.46</div>
-    </div>
+ <div class="g g5">
+  <div class="c gn"><div class="l">Balance</div><div class="big">$6941.96</div><div class="s">USD · Vantage Demo · Prev $6853.26 → +$88.70 (1.29%)</div><div class="bar"><i style="width:55%"></i></div></div>
+  <div class="c"><div class="l">Equity</div><div class="big">$6941.96</div><div class="s">Floating 0.00 · No open pos</div></div>
+  <div class="c"><div class="l">Free Margin</div><div class="big">$6941.96</div><div class="s">Margin Level 0% · 0.1 lot BUY pending</div></div>
+  <div class="c rd"><div class="l">Drawdown Recovery</div><div class="big dn">$-369.00 <span class="s">from $7222</span></div><div class="s">Prev 6853.26 · Now 6941.96 · +$88.70 recovered</div><div class="bar"><i style="width:24%;background:var(--red)"></i></div><div class="s" style="margin-top:6px">-5.11% peak · +1.29% recovery</div></div>
+  <div class="c gn"><span class="tag">LATEST WIN</span><div class="l">Last Closed</div><div class="big up">+$88.70</div><div class="s">SELL 4190.00 → 4181.13<br>887 pts · 0.21% · 12:07-12:52 Oct 16</div></div>
+ </div>
 
-    <!-- MAIN HERO HEADER (PRICE 4149.35) -->
-    <div class="bg-[#141418] border border-brandred/40 p-4 rounded-2xl shadow-xl space-y-3">
-        <div class="flex justify-between items-start">
-            <div>
-                <h1 class="text-2xl font-black tracking-tight text-white font-mono leading-none">
-                    Gold V9.7 - <br>
-                    <span class="text-brandred">LH PULLBACK ZONE</span>
-                </h1>
-                <p class="text-[10px] text-gray-400 font-mono mt-1">BOS 4154 BROKEN • ANTAY SA 4153</p>
-            </div>
-            <div class="text-right font-mono">
-                <div class="text-[10px] text-gray-400">RISK/TRADE <span class="text-brandred font-bold">$20 (0.29%)</span></div>
-                <div class="text-[9px] text-gray-500">Vantage #88291</div>
-            </div>
-        </div>
+ <div class="g g3">
+  <div class="c">
+   <div class="l" style="color:var(--tx);font-size:12px">Trade History <span class="up" style="float:right">2W 1L · +$317.40 NET</span></div>
+   <div class="t w"><b class="k">SELL LIMIT</b><span class="pill up">WIN</span><div class="r"><span>4190.00 → 4181.13</span><span class="up">+$88.70</span></div><div class="s">887 pts · 0.21% · 12:07-12:52 Oct 16 · S/L 4198 T/P 4175 · Closed early at 4181</div></div>
+   <div class="t"><b class="k">BUY LIMIT</b><span class="pill up">WIN</span><div class="r"><span>4138.00 → 4150.00</span><span class="up">+$271.20</span></div><div class="s">1200 pts · 0.29% · 09:14 Oct 16 · S/L 4130 T/P 4150 · TP HIT 4150</div></div>
+   <div class="t"><b class="k">SELL</b><span class="pill dn">LOSS</span><div class="r"><span>4175.00 → 4165.00</span><span class="dn">-$42.50</span></div><div class="s">-1000 pts · -0.24% · Oct 15 · S/L 4185 T/P 4160 · SL</div></div>
+   <div class="s" style="margin-top:12px">SESSION P/L TODAY +$359.90 · 2R · Recovery from 6853.26</div>
+  </div>
 
-        <!-- CURRENT PRICE DISPLAY -->
-        <div class="bg-[#0a0a0c] p-4 rounded-xl border border-cardborder relative">
-            <div class="flex justify-between items-center mb-1">
-                <span class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">CURRENT PRICE (TYPE 4153 TO TEST)</span>
-                <span class="text-[10px] bg-red-950 text-brandred border border-red-500/30 px-2 py-0.5 rounded-full font-mono">● BEARISH BIAS</span>
-            </div>
+  <div class="c">
+   <div class="l" style="color:var(--tx);font-size:12px">Equity Curve <span style="float:right">6853 → 6942 IMPROVING</span></div>
+   <svg class="ch" viewBox="0 0 300 150" preserveAspectRatio="none" style="width:100%;margin-top:10px">
+    <path d="M10,15 C70,70 120,118 160,118 S250,100 290,92" fill="none" stroke="var(--grn)" stroke-width="2.5" vector-effect="non-scaling-stroke"/>
+    <circle cx="10" cy="15" r="3" fill="var(--grn)"/><circle cx="160" cy="118" r="3" fill="var(--grn)"/><circle cx="290" cy="92" r="3" fill="var(--grn)"/>
+   </svg>
+   <div class="s" style="display:flex;justify-content:space-between"><span>Oct 14</span><span>Oct 15 PM</span><span>Oct 16</span></div>
+   <div class="mini"><div><div class="l">Peak</div><b>$7222</b></div><div><div class="l">Low</div><b class="dn">$6853</b></div><div><div class="l">Now</div><b class="up">$6941.96</b></div></div>
+  </div>
 
-            <div class="flex items-baseline gap-1 my-1">
-                <span class="text-xl font-mono text-gray-500">$</span>
-                <input type="number" step="0.01" id="price-input" value="4149.35" oninput="updateSellAnalyzer(this.value)"
-                    class="bg-transparent text-white font-mono text-4xl md:text-5xl font-black w-full focus:outline-none">
-            </div>
+  <div>
+   <div class="c am"><div class="l">Risk Management <span class="pill" style="color:var(--amb)">WARNING</span></div>
+    <div class="big" style="font-size:16px;font-family:inherit">0.1 lot = $80 risk</div>
+    <div class="s" id="rk">1.15% of $6941.96</div><div class="bar"><i style="width:60%;background:var(--amb)"></i></div>
+    <div class="s" style="margin-top:8px">Recommended 0.08 lot = $64 (0.92%) for 1% rule. Current slightly over but acceptable for recovery trade.</div></div>
+   <div class="c" style="margin-top:12px"><div class="l">Next Targets</div>
+    <div class="t"><div class="r" style="font-size:13px"><span>If &lt; 4180</span><span class="up">4168 support</span></div><div class="s">Breakdown · Your BUY LIMIT</div></div>
+    <div class="t" style="background:var(--red2)"><div class="r" style="font-size:13px"><span>Then</span><span class="dn">4160 SL</span></div><div class="s">SL level · -8$ risk</div></div>
+    <div class="t w"><div class="s" id="cur">Current —</div></div>
+   </div>
+  </div>
+ </div>
 
-            <div class="flex flex-wrap items-center justify-between gap-2 mt-3 pt-2 border-t border-[#22222a]">
-                <div id="status-badge" class="bg-yellow-950/80 border border-brandyellow/60 text-brandyellow px-2.5 py-1 rounded-full text-[11px] font-mono font-bold">
-                    🟡 WAIT FOR PULLBACK TO 4153
-                </div>
-                <button onclick="syncSellPrice()" class="bg-brandred hover:bg-red-600 text-white font-bold font-mono px-4 py-1.5 rounded-full text-xs transition flex items-center gap-1 shadow">
-                    🔄 SYNC SELL
-                </button>
-            </div>
-        </div>
-    </div>
+ <div class="g g2">
+  <div class="c">
+   <div class="row"><span class="chip" style="color:var(--tx)">XAUUSD <span id="chg" class="up"></span></span><span class="chip" id="src">FETCHING…</span></div>
+   <div class="px" id="px">—</div>
+   <div class="s" id="meta">Source: waiting for Twelve Data…</div>
+   <div class="row"><span class="chip" id="hi">H —</span><span class="chip" id="lo">L —</span><span class="chip" id="mk">—</span></div>
+   <div class="row"><span class="chip ok">SELL 4190 CLOSED +$88.70</span><span class="chip ok">BUY 4168 ACTIVE</span></div>
+   <div class="l" style="margin-top:16px">Enter current gold price from MT4 / Vantage (override)</div>
+   <div class="in"><input id="mi" type="number" inputmode="decimal" step="0.01" placeholder="4177.76"><button id="sp">SET PRICE</button><button id="lv" class="o">LIVE</button></div>
+  </div>
 
-    <!-- TRAFFIC LIGHT SYSTEM -->
-    <div class="bg-[#141418] border border-[#22222a] p-4 rounded-2xl shadow-xl space-y-3 font-mono">
-        <div class="flex justify-between items-center border-b border-[#22222a] pb-2">
-            <span class="text-xs uppercase tracking-wider text-gray-400 font-semibold">TRAFFIC LIGHT • V9.7</span>
-            <span id="tl-label" class="bg-brandyellow/20 text-brandyellow text-xs font-bold px-2 py-0.5 rounded border border-brandyellow/40">WAIT</span>
-        </div>
+  <div class="c">
+   <div class="l" style="color:var(--tx);font-size:12px">Entry Levels <span style="float:right">SCALP · 1:2 RR · BAL $6941.96</span></div>
+   <div class="t w"><span class="tag" style="right:10px">ACTIVE PENDING · 0.1 LOT</span>
+    <div class="s" style="margin-top:6px">BUY LIMIT · BLUE DASHED ON CHART</div>
+    <div class="big" style="margin:6px 0">4168.00 <span class="s" id="ed">Entry</span></div>
+    <div class="lv"><div><span class="s">SL</span><b>4160</b><span class="s dn">-8$ · $80 risk</span></div><div><span class="s">TP1</span><b>4181</b><span class="s up">+13$</span></div><div><span class="s">TP2</span><b>4190</b><span class="s up">+22$</span></div></div>
+    <div class="bar"><i id="pg" style="width:0"></i></div>
+    <div class="s" style="margin-top:6px" id="pgt">—</div>
+    <div class="s">Risk: 0.1 lot = $80 (1.15% of $6942) ⚠ slightly above 1%</div></div>
+   <div class="t"><span class="tag" style="right:10px">CLOSED / PROFIT +$88.70</span>
+    <div class="s" style="margin-top:6px">SELL LIMIT · CLOSED WIN</div>
+    <div class="big" style="margin:6px 0">4190.00 <span class="s">Entry → 4181.13 EXIT</span></div>
+    <div class="lv"><div><span class="s">SL</span><b>4198</b></div><div><span class="s">TP1</span><b>4175</b></div><div><span class="s">EXIT</span><b class="up">4181.13</b></div></div></div>
+  </div>
+ </div>
+ <div class="ft">Demo/analysis tool lang · hindi financial advice · Twelve Data spot price ≠ MT4/Vantage feed, gamitin ang SET PRICE kung gusto exact broker price.</div>
+</div>
 
-        <div class="grid grid-cols-3 gap-2 text-center">
-            <div id="box-wait" class="bg-[#0a0a0c] p-3 rounded-xl border-2 border-brandyellow shadow-lg">
-                <div class="w-6 h-6 rounded-full bg-brandyellow mx-auto mb-1 animate-pulse"></div>
-                <div class="text-[10px] text-brandyellow font-bold">WAIT</div>
-                <div class="text-[8px] text-gray-400">Pullback to 4153</div>
-            </div>
-            <div id="box-sell" class="bg-[#0a0a0c] opacity-30 p-3 rounded-xl border border-[#22222a]">
-                <div class="w-6 h-6 rounded-full border-2 border-gray-600 mx-auto mb-1"></div>
-                <div class="text-[10px] text-gray-400 font-bold">SELL NOW</div>
-                <div class="text-[8px] text-gray-500">At LH 4150-4153</div>
-            </div>
-            <div class="bg-[#0a0a0c] opacity-20 p-3 rounded-xl border border-[#22222a]">
-                <div class="w-6 h-6 rounded-full border-2 border-gray-600 mx-auto mb-1"></div>
-                <div class="text-[10px] text-gray-400 font-bold">BUY</div>
-                <div class="text-[8px] text-gray-600">DISABLED</div>
-            </div>
-        </div>
-
-        <div id="traffic-desc" class="bg-[#0a0a0c] border border-brandyellow/40 p-2.5 rounded-xl text-center text-xs font-bold text-brandyellow">
-            🟡 WAIT: Antayin umakyat sa 4150-4153 bago mag-abang ng SELL.
-        </div>
-    </div>
-
-    <!-- SELL ENTRY PLAN -->
-    <div class="bg-[#141418] border border-brandred/40 p-4 rounded-2xl shadow-xl space-y-3 font-mono">
-        <div class="flex justify-between items-center">
-            <div class="text-xs uppercase tracking-wider text-brandred font-bold">🔴 ACTIVE SELL ENTRY PLAN (V9.7)</div>
-            <span class="text-[9px] bg-red-950 text-brandred px-2 py-0.5 rounded border border-red-500/30">READY SETUP</span>
-        </div>
-
-        <div class="bg-[#0a0a0c] p-3 rounded-xl border border-[#22222a] space-y-2 text-xs">
-            <div class="grid grid-cols-2 gap-2 text-gray-300">
-                <div>Sell Entry: <strong class="text-white">4150.00 - 4153.00</strong></div>
-                <div>Stop Loss (SL): <strong class="text-brandred">4157.00</strong></div>
-                <div>Lot Size: <strong class="text-white">0.05</strong></div>
-                <div>Max Risk: <strong class="text-brandred">$20.00 (0.29%)</strong></div>
-            </div>
-
-            <div class="grid grid-cols-4 gap-1 text-center pt-2">
-                <div class="bg-[#141418] p-1.5 rounded border border-[#22222a]">
-                    <div class="text-[9px] text-gray-400">TP1 (85%)</div>
-                    <div class="font-bold text-white">4144.00</div>
-                </div>
-                <div class="bg-[#141418] p-1.5 rounded border border-[#22222a]">
-                    <div class="text-[9px] text-gray-400">TP2 (70%)</div>
-                    <div class="font-bold text-white">4139.85</div>
-                </div>
-                <div class="bg-[#141418] p-1.5 rounded border border-[#22222a] border-brandgreen/40">
-                    <div class="text-[9px] text-gray-400">TP3 (50%)</div>
-                    <div class="font-bold text-brandgreen">4134.00</div>
-                </div>
-                <div class="bg-[#141418] p-1.5 rounded border border-[#22222a] border-brandred/40">
-                    <div class="text-[9px] text-gray-400">RR MAX</div>
-                    <div class="font-bold text-brandred">1:3.5</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- SCRIPT LOGIC -->
-    <script>
-        function updateSellAnalyzer(val) {
-            let p = parseFloat(val) || 0;
-            let badge = document.getElementById('status-badge');
-            let boxWait = document.getElementById('box-wait');
-            let boxSell = document.getElementById('box-sell');
-            let tlLabel = document.getElementById('tl-label');
-            let desc = document.getElementById('traffic-desc');
-
-            if(p >= 4150 && p <= 4153) {
-                // Trigger SELL NOW
-                badge.className = "bg-red-950/80 border border-brandred/60 text-brandred px-2.5 py-1 rounded-full text-[11px] font-mono font-bold animate-pulse";
-                badge.innerText = "🔴 RED ALERT: SELL NOW (IN LH ZONE)";
-                
-                boxSell.className = "bg-[#0a0a0c] p-3 rounded-xl border-2 border-brandred shadow-lg";
-                boxSell.style.opacity = "1";
-                boxWait.style.opacity = "0.3";
-                boxWait.className = "bg-[#0a0a0c] p-3 rounded-xl border border-[#22222a]";
-
-                tlLabel.className = "bg-brandred/20 text-brandred text-xs font-bold px-2 py-0.5 rounded border border-brandred/40";
-                tlLabel.innerText = "SELL NOW";
-
-                desc.className = "bg-[#0a0a0c] border border-brandred/40 p-2.5 rounded-xl text-center text-xs font-bold text-brandred";
-                desc.innerText = "🔴 SELL NOW: Nasa Lower High zone na ang presyo (4150-4153)! Abangan ang M5 close below 4148.";
-            } else {
-                // WAIT MODE
-                badge.className = "bg-yellow-950/80 border border-brandyellow/60 text-brandyellow px-2.5 py-1 rounded-full text-[11px] font-mono font-bold";
-                badge.innerText = "🟡 WAIT FOR PULLBACK TO 4153";
-
-                boxWait.className = "bg-[#0a0a0c] p-3 rounded-xl border-2 border-brandyellow shadow-lg";
-                boxWait.style.opacity = "1";
-                boxSell.style.opacity = "0.3";
-                boxSell.className = "bg-[#0a0a0c] p-3 rounded-xl border border-[#22222a]";
-
-                tlLabel.className = "bg-brandyellow/20 text-brandyellow text-xs font-bold px-2 py-0.5 rounded border border-brandyellow/40";
-                tlLabel.innerText = "WAIT";
-
-                desc.className = "bg-[#0a0a0c] border border-brandyellow/40 p-2.5 rounded-xl text-center text-xs font-bold text-brandyellow";
-                desc.innerText = "🟡 WAIT: Kasalukuyang nasa ibaba. Hintaying umakyat sa 4150-4153 bago pumasok sa SELL.";
-            }
-        }
-
-        function syncSellPrice() {
-            let p = parseFloat(document.getElementById('price-input').value);
-            updateSellAnalyzer(p);
-        }
-    </script>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)};
+var live=null,manual=null,info={},err=null,fmt=function(n){return Number(n).toFixed(2)};
+function parse(p){
+  if(p&&typeof p==="object"&&!Array.isArray(p))return p;
+  if(typeof p==="string"){var l=p.trim().split("\n");if(l.length>=2){var h=l[0].split(";"),v=l[1].split(";"),o={};h.forEach(function(k,i){o[k.trim()]=v[i]});return o}}
+  return null;
+}
+function render(){
+  var p=manual!=null?manual:(live!=null?live:null);
+  var chip=$("st"),src=$("src");
+  if(err){chip.className="chip bad";chip.textContent=err;src.textContent="NO LIVE FEED"}
+  else if(manual!=null){chip.className="chip ok";chip.textContent="MANUAL · "+fmt(manual);src.textContent="MANUAL OVERRIDE"}
+  else if(live!=null){chip.className="chip ok";chip.textContent="LIVE · "+(info.time||"");src.textContent="LIVE · TWELVE DATA"}
+  else{chip.className="chip";chip.textContent="FETCHING…";src.textContent="FETCHING…"}
+  if(p==null){$("px").textContent="—";return}
+  $("px").textContent=fmt(p);
+  var pc=parseFloat(info.percent_change);
+  if(!isNaN(pc)){$("chg").className=pc>=0?"up":"dn";$("chg").textContent=(pc>=0?"▲ ":"▼ ")+Math.abs(pc).toFixed(2)+"%"}
+  $("hi").textContent="H "+(info.high?fmt(info.high):"—");
+  $("lo").textContent="L "+(info.low?fmt(info.low):"—");
+  $("mk").textContent=info.is_market_open==="true"||info.is_market_open===true?"MARKET OPEN":"MARKET CLOSED";
+  $("meta").textContent="Source: "+(manual!=null?"MANUAL MT4/Vantage":"Twelve Data XAU/USD spot")+" · prev close "+(info.previous_close?fmt(info.previous_close):"—");
+  var d=p-4168;$("ed").textContent="Entry · "+(d>=0?fmt(d)+"$ away":fmt(-d)+"$ below entry");
+  var pg=Math.max(0,Math.min(1,1-Math.abs(d)/52));$("pg").style.width=(pg*100).toFixed(0)+"%";
+  $("pgt").textContent=Math.round(pg*100)+"% to entry · "+fmt(Math.abs(d))+"$ away · "+(p<=4168?"FILLED ZONE":"ACTIVE");
+  $("cur").textContent="Current "+fmt(p)+" → 4168 = ~"+fmt(Math.abs(d))+"$ away · ACTIVE pending blue dashed";
+  $("tk").textContent="XAUUSD "+fmt(p)+" ▲ "+(isNaN(pc)?"":pc.toFixed(2)+"%")+"   ·   HIGH "+(info.high?fmt(info.high):"—")+"   ·   LOW "+(info.low?fmt(info.low):"—")+"   ·   BUY 4168 ACTIVE   ·   SELL 4190 CLOSED +$88.70   ·   NY SESSION   ·   BAL $6941.96   ·   ";
+}
+$("sp").onclick=function(){var v=parseFloat($("mi").value);if(!isNaN(v)&&v>0){manual=v;render()}};
+$("lv").onclick=function(){manual=null;$("mi").value="";render()};
+render();
+var KEY=null;try{KEY=localStorage.getItem("td_key")}catch(e){}
+function setKey(){var k=prompt("Twelve Data API key:");if(k&&k.trim()){KEY=k.trim();try{localStorage.setItem("td_key",KEY)}catch(e){}poll()}}
+function poll(){
+  if(!KEY){err="TAP 🔑 TO SET API KEY";render();return}
+  fetch("https://api.twelvedata.com/quote?symbol=XAU/USD&apikey="+encodeURIComponent(KEY))
+  .then(function(r){return r.json()}).then(function(o){
+    if(o&&o.close){live=parseFloat(o.close);info=o;info.time=new Date().toLocaleTimeString("en-PH",{hour12:false});err=null}
+    else err=(o&&o.message?String(o.message).slice(0,42).toUpperCase():"FEED ERROR");
+    render();
+  }).catch(function(){err="NETWORK ERROR";render()});
+}
+$("kb").onclick=setKey;
+poll();
+setInterval(function(){if(!document.hidden)poll()},120000);
+})();
+</script>
 </body>
 </html>
